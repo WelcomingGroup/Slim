@@ -21,7 +21,7 @@ interface HeadersInterface extends CollectionInterface
      * @param string          $key   The case-insensitive header name
      * @param string|string[] $value The new header value(s)
      */
-    public function add($key, $value);
+    public function add($key, array|string $value);
 
     /**
      * Normalize header name

@@ -17,13 +17,11 @@ interface InvocationStrategyInterface
      * @param ServerRequestInterface $request The request object.
      * @param ResponseInterface      $response The response object.
      * @param array                  $routeArguments The route's placeholder arguments
-     *
-     * @return ResponseInterface|string
      */
     public function __invoke(
         callable $callable,
         ServerRequestInterface $request,
         ResponseInterface $response,
         array $routeArguments
-    );
+    ): \Psr\Http\Message\ResponseInterface|string;
 }

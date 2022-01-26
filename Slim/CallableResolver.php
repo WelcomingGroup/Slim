@@ -17,19 +17,10 @@ use Slim\Interfaces\CallableResolverInterface;
  */
 final class CallableResolver implements CallableResolverInterface
 {
-    const CALLABLE_PATTERN = '!^([^\:]+)\:([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)$!';
+    public const CALLABLE_PATTERN = '!^([^\:]+)\:([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)$!';
 
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
-
-    /**
-     * @param ContainerInterface $container
-     */
-    public function __construct(ContainerInterface $container)
+    public function __construct(private readonly ContainerInterface $container)
     {
-        $this->container = $container;
     }
 
     /**
@@ -54,7 +45,7 @@ final class CallableResolver implements CallableResolverInterface
         $resolved = $toResolve;
 
         if (is_string($toResolve)) {
-            list($class, $method) = $this->parseCallable($toResolve);
+            [$class, $method] = $this->parseCallable($toResolve);
             $resolved = $this->resolveCallable($class, $method);
         }
 
@@ -112,7 +103,7 @@ final class CallableResolver implements CallableResolverInterface
         if (!is_callable($callable)) {
             throw new RuntimeException(sprintf(
                 '%s is not resolvable',
-                is_array($callable) || is_object($callable) ? json_encode($callable) : $callable
+                is_array($callable) || is_object($callable) ? json_encode($callable, JSON_THROW_ON_ERROR) : $callable
             ));
         }
     }

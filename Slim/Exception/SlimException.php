@@ -13,25 +13,9 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class SlimException extends Exception
 {
-    /**
-     * @var ServerRequestInterface
-     */
-    protected $request;
-
-    /**
-     * @var ResponseInterface
-     */
-    protected $response;
-
-    /**
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
-     */
-    public function __construct(ServerRequestInterface $request, ResponseInterface $response)
+    public function __construct(protected ServerRequestInterface $request, protected ResponseInterface $response)
     {
         parent::__construct();
-        $this->request = $request;
-        $this->response = $response;
     }
 
     /**

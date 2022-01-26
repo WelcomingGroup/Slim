@@ -40,14 +40,7 @@ class Route extends Routable implements RouteInterface
      */
     protected $name;
 
-    /**
-     * Parent route groups
-     *
-     * @var RouteGroup[]
-     */
-    protected $groups;
-
-    private $finalized = false;
+    private bool $finalized = false;
 
     /**
      * Output buffering mode
@@ -79,11 +72,13 @@ class Route extends Routable implements RouteInterface
      * @param RouteGroup[]    $groups The parent route groups
      * @param int             $identifier The route identifier
      */
-    public function __construct($methods, $pattern, $callable, $groups = [], $identifier = 0)
+    public function __construct($methods, $pattern, $callable, /**
+     * Parent route groups
+     */
+    protected $groups = [], $identifier = 0)
     {
         parent::__construct($pattern, $callable);
         $this->methods  = is_string($methods) ? [$methods] : $methods;
-        $this->groups   = $groups;
         $this->identifier = 'route' . $identifier;
     }
 
@@ -119,10 +114,8 @@ class Route extends Routable implements RouteInterface
 
     /**
      * This method enables you to override the Route's callable
-     *
-     * @param string|Closure $callable
      */
-    public function setCallable($callable)
+    public function setCallable(\Closure|string $callable)
     {
         $this->callable = $callable;
     }
@@ -167,10 +160,8 @@ class Route extends Routable implements RouteInterface
 
     /**
      * Get output buffering mode
-     *
-     * @return boolean|string
      */
-    public function getOutputBuffering()
+    public function getOutputBuffering(): bool|string
     {
         return $this->outputBuffering;
     }

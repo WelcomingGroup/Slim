@@ -27,7 +27,7 @@ interface CookiesInterface
      * @param string       $name  Cookie name
      * @param string|array $value Cookie value, or cookie properties
      */
-    public function set($name, $value);
+    public function set($name, array|string $value);
 
     /**
      * Convert to array of `Set-Cookie` headers

@@ -13,13 +13,6 @@ use Slim\Interfaces\Http\CookiesInterface;
 class Cookies implements CookiesInterface
 {
     /**
-     * Cookies from HTTP request
-     *
-     * @var array
-     */
-    protected $requestCookies = [];
-
-    /**
      * Cookies for HTTP response
      *
      * @var array
@@ -42,18 +35,17 @@ class Cookies implements CookiesInterface
         'samesite' => null
     ];
 
-    /**
-     * @param array $cookies
-     */
-    public function __construct(array $cookies = [])
+    public function __construct(
+        /**
+         * Cookies from HTTP request
+         */
+        protected array $requestCookies = []
+    )
     {
-        $this->requestCookies = $cookies;
     }
 
     /**
      * Set default cookie properties
-     *
-     * @param array $settings
      */
     public function setDefaults(array $settings)
     {
@@ -65,7 +57,7 @@ class Cookies implements CookiesInterface
      */
     public function get($name, $default = null)
     {
-        return isset($this->requestCookies[$name]) ? $this->requestCookies[$name] : $default;
+        return $this->requestCookies[$name] ?? $default;
     }
 
     /**
@@ -150,7 +142,7 @@ class Cookies implements CookiesInterface
     public static function parseHeader($header)
     {
         if (is_array($header) === true) {
-            $header = isset($header[0]) ? $header[0] : '';
+            $header = $header[0] ?? '';
         }
 
         if (is_string($header) === false) {
@@ -162,7 +154,7 @@ class Cookies implements CookiesInterface
         $cookies = [];
 
         foreach ($pieces as $cookie) {
-            $cookie = explode('=', $cookie, 2);
+            $cookie = explode('=', (string) $cookie, 2);
 
             if (count($cookie) === 2) {
                 $key = urldecode($cookie[0]);

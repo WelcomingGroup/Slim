@@ -41,12 +41,9 @@ class App
      *
      * @var string
      */
-    const VERSION = '3.12.3';
+    final const VERSION = '3.12.3';
 
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
+    private readonly \Psr\Container\ContainerInterface $container;
 
     /**
      * @param ContainerInterface|array $container
@@ -85,7 +82,7 @@ class App
      *
      * @return static
      */
-    public function add($callable)
+    public function add(callable|string $callable)
     {
         return $this->addMiddleware(new DeferredCallable($callable, $this->container));
     }
@@ -121,7 +118,7 @@ class App
      *
      * @return RouteInterface
      */
-    public function get($pattern, $callable)
+    public function get($pattern, callable|string $callable)
     {
         return $this->map(['GET'], $pattern, $callable);
     }
@@ -134,7 +131,7 @@ class App
      *
      * @return RouteInterface
      */
-    public function post($pattern, $callable)
+    public function post($pattern, callable|string $callable)
     {
         return $this->map(['POST'], $pattern, $callable);
     }
@@ -147,7 +144,7 @@ class App
      *
      * @return RouteInterface
      */
-    public function put($pattern, $callable)
+    public function put($pattern, callable|string $callable)
     {
         return $this->map(['PUT'], $pattern, $callable);
     }
@@ -160,7 +157,7 @@ class App
      *
      * @return RouteInterface
      */
-    public function patch($pattern, $callable)
+    public function patch($pattern, callable|string $callable)
     {
         return $this->map(['PATCH'], $pattern, $callable);
     }
@@ -173,7 +170,7 @@ class App
      *
      * @return RouteInterface
      */
-    public function delete($pattern, $callable)
+    public function delete($pattern, callable|string $callable)
     {
         return $this->map(['DELETE'], $pattern, $callable);
     }
@@ -186,7 +183,7 @@ class App
      *
      * @return RouteInterface
      */
-    public function options($pattern, $callable)
+    public function options($pattern, callable|string $callable)
     {
         return $this->map(['OPTIONS'], $pattern, $callable);
     }
@@ -199,7 +196,7 @@ class App
      *
      * @return RouteInterface
      */
-    public function any($pattern, $callable)
+    public function any($pattern, callable|string $callable)
     {
         return $this->map(['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'], $pattern, $callable);
     }
@@ -213,7 +210,7 @@ class App
      *
      * @return RouteInterface
      */
-    public function map(array $methods, $pattern, $callable)
+    public function map(array $methods, $pattern, callable|string $callable)
     {
         if ($callable instanceof Closure) {
             $callable = $callable->bindTo($this->container);
@@ -235,16 +232,12 @@ class App
      * Add a route that sends an HTTP redirect
      *
      * @param string              $from
-     * @param string|UriInterface $to
      * @param int                 $status
-     *
      * @return RouteInterface
      */
-    public function redirect($from, $to, $status = 302)
+    public function redirect($from, string|\Psr\Http\Message\UriInterface $to, $status = 302)
     {
-        $handler = function ($request, ResponseInterface $response) use ($to, $status) {
-            return $response->withHeader('Location', (string)$to)->withStatus($status);
-        };
+        $handler = fn($request, ResponseInterface $response) => $response->withHeader('Location', (string)$to)->withStatus($status);
 
         return $this->get($from, $handler);
     }
@@ -261,7 +254,7 @@ class App
      *
      * @return RouteGroupInterface
      */
-    public function group($pattern, $callable)
+    public function group($pattern, callable|\Closure $callable)
     {
         /** @var RouterInterface $router */
         $router = $this->container->get('router');
@@ -288,7 +281,7 @@ class App
      * @throws Exception
      * @throws Throwable
      */
-    public function run($silent = false)
+    public function run(bool|false $silent = false)
     {
         $response = $this->container->get('response');
 
@@ -401,8 +394,6 @@ class App
 
     /**
      * Send the response to the client
-     *
-     * @param ResponseInterface $response
      */
     public function respond(ResponseInterface $response)
     {
@@ -568,8 +559,6 @@ class App
     /**
      * Dispatch the router to find the route. Prepare the route for use.
      *
-     * @param ServerRequestInterface $request
-     * @param RouterInterface        $router
      *
      * @return ServerRequestInterface
      */
@@ -598,10 +587,8 @@ class App
     /**
      * Finalize response
      *
-     * @param ResponseInterface $response
      *
      * @return ResponseInterface
-     *
      * @throws RuntimeException
      */
     protected function finalize(ResponseInterface $response)
@@ -641,7 +628,6 @@ class App
      *
      * @see https://tools.ietf.org/html/rfc7231
      *
-     * @param ResponseInterface $response
      *
      * @return bool
      */
@@ -657,7 +643,6 @@ class App
     /**
      * Helper method to check if the current request is a HEAD request
      *
-     * @param RequestInterface $request
      *
      * @return bool
      */
@@ -670,9 +655,6 @@ class App
      * Call relevant handler from the Container if needed. If it doesn't exist,
      * then just re-throw.
      *
-     * @param  Exception              $e
-     * @param  ServerRequestInterface $request
-     * @param  ResponseInterface      $response
      *
      * @return ResponseInterface
      *
@@ -709,9 +691,6 @@ class App
      * Call relevant handler from the Container if needed. If it doesn't exist,
      * then just re-throw.
      *
-     * @param  Throwable $e
-     * @param  ServerRequestInterface $request
-     * @param  ResponseInterface $response
      *
      * @return ResponseInterface
      *

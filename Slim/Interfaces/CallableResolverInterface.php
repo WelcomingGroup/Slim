@@ -20,5 +20,5 @@ interface CallableResolverInterface
      *
      * @throws RuntimeException
      */
-    public function resolve($toResolve);
+    public function resolve(callable|string $toResolve);
 }

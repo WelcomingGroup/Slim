@@ -13,12 +13,12 @@ use Psr\Http\Message\StreamInterface;
  * Represents a non-readable stream that whenever it is written pushes
  * the data back to the browser immediately.
  */
-class NonBufferedBody implements StreamInterface
+class NonBufferedBody implements StreamInterface, \Stringable
 {
     /**
      * {@inheritdoc}
      */
-    public function __toString()
+    public function __toString(): string
     {
         return '';
     }

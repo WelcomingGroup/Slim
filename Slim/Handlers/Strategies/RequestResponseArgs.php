@@ -24,7 +24,6 @@ class RequestResponseArgs implements InvocationStrategyInterface
      * @param array|callable         $callable
      * @param ServerRequestInterface $request
      * @param ResponseInterface      $response
-     * @param array                  $routeArguments
      *
      * @return ResponseInterface
      */

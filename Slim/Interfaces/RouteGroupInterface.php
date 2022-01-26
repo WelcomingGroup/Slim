@@ -25,7 +25,7 @@ interface RouteGroupInterface
      *
      * @return RouteGroupInterface
      */
-    public function add($callable);
+    public function add(callable|string $callable);
 
     /**
      * Execute route group callable in the context of the Slim App

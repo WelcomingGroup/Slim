@@ -36,10 +36,8 @@ class Container extends PimpleContainer implements ContainerInterface
 {
     /**
      * Default settings
-     *
-     * @var array
      */
-    private $defaultSettings = [
+    private array $defaultSettings = [
         'httpVersion' => '1.1',
         'responseChunkSize' => 4096,
         'outputBuffering' => 'append',
@@ -56,7 +54,7 @@ class Container extends PimpleContainer implements ContainerInterface
     {
         parent::__construct($values);
 
-        $userSettings = isset($values['settings']) ? $values['settings'] : [];
+        $userSettings = $values['settings'] ?? [];
         $this->registerDefaultServices($userSettings);
     }
 
@@ -79,9 +77,7 @@ class Container extends PimpleContainer implements ContainerInterface
          *
          * @return array|ArrayAccess
          */
-        $this['settings'] = function () use ($userSettings, $defaultSettings) {
-            return new Collection(array_merge($defaultSettings, $userSettings));
-        };
+        $this['settings'] = fn() => new Collection(array_merge($defaultSettings, $userSettings));
 
         $defaultProvider = new DefaultServicesProvider();
         $defaultProvider->register($this);
@@ -124,7 +120,6 @@ class Container extends PimpleContainer implements ContainerInterface
      * Tests whether an exception needs to be recast for compliance with psr/container.  This will be if the
      * exception was thrown by Pimple.
      *
-     * @param InvalidArgumentException $exception
      *
      * @return bool
      */

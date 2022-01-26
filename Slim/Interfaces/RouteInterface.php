@@ -72,7 +72,7 @@ interface RouteInterface
      *
      * @throws InvalidArgumentException If an unknown buffering mode is specified
      */
-    public function setOutputBuffering($mode);
+    public function setOutputBuffering(bool|string $mode);
 
     /**
      * Set route name
@@ -94,13 +94,10 @@ interface RouteInterface
      *
      * @return RouteInterface
      */
-    public function add($callable);
+    public function add(callable|string $callable);
 
     /**
      * Prepare the route for use
-     *
-     * @param ServerRequestInterface $request
-     * @param array                  $arguments
      */
     public function prepare(ServerRequestInterface $request, array $arguments);
 

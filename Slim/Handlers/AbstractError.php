@@ -32,7 +32,7 @@ abstract class AbstractError extends AbstractHandler
      *
      * @return void
      */
-    protected function writeToErrorLog($throwable)
+    protected function writeToErrorLog(\Exception|\Throwable $throwable)
     {
         if ($this->displayErrorDetails) {
             return;
@@ -57,9 +57,9 @@ abstract class AbstractError extends AbstractHandler
      *
      * @return string
      */
-    protected function renderThrowableAsText($throwable)
+    protected function renderThrowableAsText(\Exception|\Throwable $throwable)
     {
-        $text = sprintf('Type: %s' . PHP_EOL, get_class($throwable));
+        $text = sprintf('Type: %s' . PHP_EOL, $throwable::class);
 
         if ($code = $throwable->getCode()) {
             $text .= sprintf('Code: %s' . PHP_EOL, $code);

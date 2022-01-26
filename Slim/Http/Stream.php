@@ -16,14 +16,14 @@ use RuntimeException;
  *
  * @link https://github.com/php-fig/http-message/blob/master/src/StreamInterface.php
  */
-class Stream implements StreamInterface
+class Stream implements StreamInterface, \Stringable
 {
     /**
      * Bit mask to determine if the stream is a pipe
      *
      * This is octal as per header stat.h
      */
-    const FSTAT_MODE_S_IFIFO = 0010000;
+    final const FSTAT_MODE_S_IFIFO = 0010000;
 
     /**
      * Resource modes
@@ -115,7 +115,7 @@ class Stream implements StreamInterface
             return $this->meta;
         }
 
-        return isset($this->meta[$key]) ? $this->meta[$key] : null;
+        return $this->meta[$key] ?? null;
     }
 
     /**
@@ -185,10 +185,8 @@ class Stream implements StreamInterface
      * string casting operations.
      *
      * @see http://php.net/manual/en/language.oop5.magic.php#object.tostring
-     *
-     * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         if (!$this->isAttached()) {
             return '';
@@ -197,7 +195,7 @@ class Stream implements StreamInterface
         try {
             $this->rewind();
             return $this->getContents();
-        } catch (RuntimeException $e) {
+        } catch (RuntimeException) {
             return '';
         }
     }
@@ -274,7 +272,7 @@ class Stream implements StreamInterface
                 if ($this->isAttached()) {
                     $meta = $this->getMetadata();
                     foreach (self::$modes['readable'] as $mode) {
-                        if (strpos($meta['mode'], $mode) === 0) {
+                        if (str_starts_with($meta['mode'], $mode)) {
                             $this->readable = true;
                             break;
                         }
@@ -298,7 +296,7 @@ class Stream implements StreamInterface
             if ($this->isAttached()) {
                 $meta = $this->getMetadata();
                 foreach (self::$modes['writable'] as $mode) {
-                    if (strpos($meta['mode'], $mode) === 0) {
+                    if (str_starts_with($meta['mode'], $mode)) {
                         $this->writable = true;
                         break;
                     }

@@ -24,7 +24,7 @@ use Slim\Interfaces\Http\HeadersInterface;
  * @link https://github.com/php-fig/http-message/blob/master/src/MessageInterface.php
  * @link https://github.com/php-fig/http-message/blob/master/src/ResponseInterface.php
  */
-class Response extends Message implements ResponseInterface
+class Response extends Message implements ResponseInterface, \Stringable
 {
     /**
      * Status code
@@ -122,7 +122,7 @@ class Response extends Message implements ResponseInterface
      *
      * @var string
      */
-    const EOL = "\r\n";
+    final const EOL = "\r\n";
 
     /**
      * @param int                   $status  The response status code.
@@ -135,8 +135,8 @@ class Response extends Message implements ResponseInterface
         StreamInterface $body = null
     ) {
         $this->status = $this->filterStatus($status);
-        $this->headers = $headers ? $headers : new Headers();
-        $this->body = $body ? $body : new Body(fopen('php://temp', 'r+'));
+        $this->headers = $headers ?: new Headers();
+        $this->body = $body ?: new Body(fopen('php://temp', 'r+'));
     }
 
     /**
@@ -315,7 +315,7 @@ class Response extends Message implements ResponseInterface
      *
      * @return static
      */
-    public function withRedirect($url, $status = null)
+    public function withRedirect(string|\Psr\Http\Message\UriInterface $url, $status = null)
     {
         $responseWithRedirect = $this->withHeader('Location', (string)$url);
 
@@ -514,10 +514,8 @@ class Response extends Message implements ResponseInterface
      * Convert response to string.
      *
      * Note: This method is not part of the PSR-7 standard.
-     *
-     * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         $output = sprintf(
             'HTTP/%s %s %s',
