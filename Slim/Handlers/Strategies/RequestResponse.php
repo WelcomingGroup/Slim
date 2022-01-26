@@ -31,7 +31,7 @@ class RequestResponse implements InvocationStrategyInterface
         ServerRequestInterface $request,
         ResponseInterface $response,
         array $routeArguments
-    ) {
+    ): \Psr\Http\Message\ResponseInterface|string {
         foreach ($routeArguments as $k => $v) {
             $request = $request->withAttribute($k, $v);
         }

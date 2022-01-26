@@ -374,12 +374,12 @@ class Uri implements UriInterface, \Stringable
      *
      * @return string The percent-encoded query string.
      */
-    protected function filterUserInfo($query): string
+    protected function filterUserInfo(?string $query): string
     {
         return preg_replace_callback(
             '/(?:[^a-zA-Z0-9_\-\.~!\$&\'\(\)\*\+,;=]+|%(?![A-Fa-f0-9]{2}))/u',
             fn($match) => rawurlencode($match[0]),
-            $query
+            (string) $query
         );
     }
 
@@ -622,12 +622,12 @@ class Uri implements UriInterface, \Stringable
      *
      * @link   http://www.faqs.org/rfcs/rfc3986.html
      */
-    protected function filterPath($path): string
+    protected function filterPath(?string $path): string
     {
         return preg_replace_callback(
             '/(?:[^a-zA-Z0-9_\-\.~:@&=\+\$,\/;%]+|%(?![A-Fa-f0-9]{2}))/',
             fn($match) => rawurlencode($match[0]),
-            $path
+            (string) $path
         );
     }
 
@@ -693,12 +693,12 @@ class Uri implements UriInterface, \Stringable
      *
      * @return string The percent-encoded query string.
      */
-    protected function filterQuery($query): string
+    protected function filterQuery(?string $query): string
     {
         return preg_replace_callback(
             '/(?:[^a-zA-Z0-9_\-\.~!\$&\'\(\)\*\+,;=%:@\/\?]+|%(?![A-Fa-f0-9]{2}))/',
             fn($match) => rawurlencode($match[0]),
-            $query
+            (string) $query
         );
     }
 
@@ -807,7 +807,7 @@ class Uri implements UriInterface, \Stringable
         $basePath = $this->getBasePath();
 
         if ($authority !== '' && !str_starts_with($basePath, '/')) {
-            $basePath = $basePath . '/' . $basePath;
+            $basePath .= '/' . $basePath;
         }
 
         return ($scheme !== '' ? $scheme . ':' : '')

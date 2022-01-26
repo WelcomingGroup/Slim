@@ -34,28 +34,28 @@ class Request extends Message implements ServerRequestInterface
      *
      * @var string
      */
-    protected string $method;
+    protected ?string $method = null;
 
     /**
      * The original request method (ignoring override)
      *
      * @var string
      */
-    protected ?string $originalMethod;
+    protected ?string $originalMethod = null;
 
     /**
      * The request URI target (path + query string)
      *
      * @var string
      */
-    protected string $requestTarget;
+    protected ?string $requestTarget = null;
 
     /**
      * The request query string params
      *
      * @var array
      */
-    protected array $queryParams;
+    protected array $queryParams = [];
 
     /**
      * The request attributes (route segment names and values)
@@ -109,7 +109,7 @@ class Request extends Message implements ServerRequestInterface
         $method = $environment['REQUEST_METHOD'];
         $uri = Uri::createFromEnvironment($environment);
         $headers = Headers::createFromEnvironment($environment);
-        $cookies = Cookies::parseHeader((string)$headers->get('Cookie', []));
+        $cookies = Cookies::parseHeader($headers->get('Cookie', []));
         $serverParams = $environment->all();
         $body = new RequestBody();
         $uploadedFiles = UploadedFile::createFromEnvironment($environment);

@@ -123,7 +123,7 @@ class Router implements RouterInterface
      * @throws InvalidArgumentException If cacheFile is not a string or not false
      * @throws RuntimeException         If cacheFile directory is not writable
      */
-    public function setCacheFile(string|false $cacheFile)
+    public function setCacheFile(string|bool $cacheFile)
     {
         if (!is_string($cacheFile) && $cacheFile !== false) {
             throw new InvalidArgumentException('Router cache file must be a string or false');
