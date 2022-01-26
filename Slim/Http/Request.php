@@ -55,7 +55,7 @@ class Request extends Message implements ServerRequestInterface
      *
      * @var array
      */
-    protected array $queryParams = [];
+    protected ?array $queryParams = null;
 
     /**
      * The request attributes (route segment names and values)
